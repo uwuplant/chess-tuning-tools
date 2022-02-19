@@ -168,20 +168,20 @@ class TuningClient(object):
                     cl_args.append(arg)
             return cl_args
 
-        self.logger.debug(
-            f"Before benchmark engine 1:\n{config['engine'][0]['initStrings']}"
-        )
-        args = cl_arguments(InitStrings(config["engine"][0]["initStrings"]))
-        self.logger.debug(f"Arguments for engine 1: {args}")
-        path = os.path.join(os.path.curdir, "lc0")
-        out = subprocess.run([path, "benchmark"] + args, capture_output=True)
-        s = out.stdout.decode("utf-8")
-        try:
-            result = float(re.findall(r"([0-9\.]+)\snodes per second", s)[0])
-        except IndexError:
-            self.logger.error(f"Error while parsing engine1 benchmark:\n{s}")
-            sys.exit(1)
-        self.lc0_benchmark = result
+        #self.logger.debug(
+        #    f"Before benchmark engine 1:\n{config['engine'][0]['initStrings']}"
+        #)
+        #args = cl_arguments(InitStrings(config["engine"][0]["initStrings"]))
+        #self.logger.debug(f"Arguments for engine 1: {args}")
+        #path = os.path.join(os.path.curdir, "lc0")
+        #out = subprocess.run([path, "benchmark"] + args, capture_output=True)
+        #s = out.stdout.decode("utf-8")
+        #try:
+        #    result = float(re.findall(r"([0-9\.]+)\snodes per second", s)[0])
+        #except IndexError:
+        #    self.logger.error(f"Error while parsing engine1 benchmark:\n{s}")
+        #    sys.exit(1)
+        #self.lc0_benchmark = result
 
         self.logger.debug(
             f"Before benchmark engine 2:\n{config['engine'][1]['initStrings']}"
@@ -201,11 +201,11 @@ class TuningClient(object):
         self.sf_benchmark = result
 
     def adjust_time_control(self, time_control, lc0_nodes, sf_nodes):
-        lc0_ratio = lc0_nodes / self.lc0_benchmark
+        #lc0_ratio = lc0_nodes / self.lc0_benchmark
         sf_ratio = sf_nodes / self.sf_benchmark
         new_tc = TimeControl(
-            engine1_time=float(time_control.engine1_time) * lc0_ratio,
-            engine1_increment=float(time_control.engine1_increment) * lc0_ratio,
+            engine1_time=float(time_control.engine1_time) * sf_ratio,
+            engine1_increment=float(time_control.engine1_increment) * sf_ratio,
             engine2_time=float(time_control.engine2_time) * sf_ratio,
             engine2_increment=float(time_control.engine2_increment) * sf_ratio,
         )
